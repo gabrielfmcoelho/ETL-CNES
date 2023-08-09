@@ -30,12 +30,10 @@ class ConnectionBigQuery:
             pass
         try:
             df_splits = np.array_split(df, 10) # Divide o dataframe em 10 partes
-            i=0
-            for df_split in df_splits:
+            for i, df_split in enumerate(df_splits):
                 rows_to_insert = df_split.to_dict('records')
                 print(f"Carregando {len(rows_to_insert)} linhas para {table_id} (parte {i+1} de {len(df_splits)})")
                 response = self.client.insert_rows(table, rows_to_insert)
-                i+=1
             table.description = str(date)
             self.client.update_table(table, ['description']) # Atualiza a descrição da tabela
             print(f"Carregamento concluído para {table_id}")

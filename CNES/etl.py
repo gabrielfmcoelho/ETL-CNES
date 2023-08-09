@@ -10,7 +10,12 @@ class etl():
     def __init__(self, task_parameters, db_credential_path):
         self.should_run = task_parameters['run']
         self.task_parameters = task_parameters
-        self.date_interval = [i for i in range(task_parameters['extract']['options']['start_date'], task_parameters['extract']['options']['end_date']+1)]
+        self.date_interval = list(
+            range(
+                task_parameters['extract']['options']['start_date'],
+                task_parameters['extract']['options']['end_date'] + 1,
+            )
+        )
         self.db_credential = db_credential_path
 
     def extract(self, options):

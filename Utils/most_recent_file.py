@@ -11,9 +11,7 @@ class Most_recent_file:
             temp_date = 000000
 
             for item in self.items:
-                regex_string = re.search(target, item)
-
-                if regex_string:
+                if regex_string := re.search(target, item):
                     date_position = int(regex_string.span()[1])
                     date = int(item[date_position:(date_position+6)])
 

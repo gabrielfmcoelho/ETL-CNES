@@ -101,7 +101,7 @@ def compile_info(path_tables, date):
     df_aux = df_aux.drop(df_aux[(df_aux['CO_CONVENIO'] != '3') & (df_aux['CO_CONVENIO'] != '4') & (df_aux['CO_CONVENIO'] != '5') & (df_aux['CO_CONVENIO'] != '6')].index)
     ## MERGE - DF_FINAL <- TBATENDIMENTOPRESTADO (left)
     df_final = df_final.merge(df_aux, how='left', on='CO_UNIDADE')
-    
+
     ## AGRUPAMENTO - Agurpamento por CO_MUNICIPIO_GESTOR
     df_final['QT_NaoSUS'] = df_final['QT_EXIST'] - df_final['QT_SUS']
     df_final = df_final.groupby(['CO_MUNICIPIO_GESTOR']).agg({'QT_EXIST': 'sum', 'QT_SUS':'sum', 'QT_NaoSUS':'sum'}).reset_index().sort_values(by=['CO_MUNICIPIO_GESTOR'])
@@ -132,10 +132,8 @@ def compile_info(path_tables, date):
     ## AGRUPAMENTO - Agurpamento por CO_UNIDADE e CO_TIPO_LEITO
     def possui_leito_pediatrico(x):
         #se coluna ['CO_TIPO_LEITO'] possuir 5 return 1 se não return 0
-        if '5' in x.values:
-            return 1
-        else:
-            return 0
+        return 1 if '5' in x.values else 0
+
     df_aux = df_aux.groupby(['CO_MUNICIPIO_GESTOR']).agg({'CO_TIPO_LEITO':['nunique',possui_leito_pediatrico]}).reset_index()
     df_aux.columns = ['CO_MUNICIPIO_GESTOR','DVLeitos','EXTLeitosPediatrico']
 
@@ -143,29 +141,35 @@ def compile_info(path_tables, date):
     df_final_3 = df_main.drop_duplicates(['CO_UNIDADE'])
     df_final_3['TP_UNIDADE'] = df_final_3['TP_UNIDADE'].astype('int64')
     def agrupar_Unidades(x):
-        if x == 5 or x == 7 or x == 62:
+        if x in [5, 7, 62]:
             return 1
-        elif x == 4 or x == 36:
+        elif x in [4, 36]:
             return 2
         elif x == 39:
             return 3
         elif x == 22:
             return 4
-        elif x == 1 or x == 2:
+        elif x in [1, 2]:
             return 5
+
     df_final_3['TP_UNIDADE_AGRUPADO'] = df_final_3['TP_UNIDADE'].apply(agrupar_Unidades)
 
     ## AGRUPAMENTO - Agrupamento por CO_MUNICIPIO_GESTOR e renomeando colunas
     def contar_hopitais(x):
         return len(x.loc[x == 1])
+
     def contar_clinicas(x):
         return len(x.loc[x == 2])
+
     def contar_laboratorios(x):
         return len(x.loc[x == 3])
+
     def contar_consultorios(x):
         return len(x.loc[x == 4])
+
     def contar_unidades_basicas(x):
         return len(x.loc[x == 5])
+
     df_final_3 = df_final_3.groupby(['CO_MUNICIPIO_GESTOR']).agg({'CO_CNES':'nunique','CO_UNIDADE':'nunique','TP_UNIDADE':'nunique','CO_TIPO_UNIDADE':'nunique','CO_TIPO_ESTABELECIMENTO':'nunique','TP_UNIDADE_AGRUPADO':[contar_hopitais,contar_clinicas,contar_laboratorios, contar_consultorios, contar_unidades_basicas]}).reset_index()
     df_final_3.columns = ['CO_MUNICIPIO_GESTOR','QTCNES','QTUnidades','DVtpunidade','DVcotpunidade','DVcotpestab','QTHospitais','QTClinicas','QTLaboratorios', 'QTConsultorios', 'QTUnidadesBasicas']
 

@@ -13,9 +13,7 @@ class Date_interval_file:
         for target in self.targets:
 
             for item in self.items:
-                regex_string = re.search(target, item)
-
-                if regex_string:
+                if regex_string := re.search(target, item):
                     if self.mode==3:
                         self.query_targets.append(item)
                         self.query_targets.sort()
