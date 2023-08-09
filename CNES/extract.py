@@ -76,7 +76,8 @@ def download_files(ftp_host, ftp_path, filtered_files, temp_folder):
                     f.write(chunk)
                     progress + len(chunk)
                     progress.show_progress()
-                ftp.retrbinary('RETR ' + file, callback)
+
+                ftp.retrbinary(f'RETR {file}', callback)
                 print('')
             count += 1
     print('Files downloaded')

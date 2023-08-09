@@ -13,8 +13,8 @@ class unzipfiles:
         for target_file in self.target_files:
             target = str(target_file)+str(self.date)+'.csv'
             with ZipFile(self.temp_dir+self.filename, 'r') as zObject:
-                zObject.extract(target, path=self.temp_unziped+self.filename[0:8])
+                zObject.extract(target, path=self.temp_unziped + self.filename[:8])
 
     def unzip_all(self):
         with ZipFile(self.temp_dir+self.filename, 'r') as zObject:
-            zObject.extractall(path=self.temp_unziped+self.filename[0:8])
+            zObject.extractall(path=self.temp_unziped + self.filename[:8])

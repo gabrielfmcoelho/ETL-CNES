@@ -114,6 +114,3 @@ if __name__ == '__main__':
     if TASK_OPTIONS['run_merge']['run']:
         script = './DataEngineering' + '/' + TASK_OPTIONS['run_merge']['task_uid'] + '.py'
         subprocess.run(['python', script, './Datasets'])
-
-    if TASK_OPTIONS['run_load_to_db']['run']:
-        pass
